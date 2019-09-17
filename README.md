@@ -10,6 +10,35 @@ pretty print struct's content at runtime.
 * For production environment
 * Care about the speed
 
+## Example
+
+```c
+struct person
+{
+    int age; 
+    int height; 
+    struct like {
+        char *type;
+        char *name;
+    }like;
+};
+
+int main()
+{
+
+    struct person johndoe;
+
+    memset(&johndoe, 0x00, sizeof(struct person));
+
+    johndoe.age = 6; 
+    johndoe.like.type = "Software-Developing"; 
+    johndoe.like.name = "C"; 
+    printout_struct(STRINGIZE(johndoe), &johndoe, "person");
+
+    return 0;
+}
+```
+
 ## Limitation
 * Only works for gdb debugger
 * Only tested on linux
