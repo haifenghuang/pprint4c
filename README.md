@@ -39,6 +39,18 @@ int main()
 }
 ```
 
+**Result:**
+```
+johndoe = {
+  age = 6, 
+  height = 0, 
+  like = {
+    type = 0x400934 "Software-Developing", 
+    name = 0x400948 "C"
+  }
+}
+```
+
 ## Limitation
 * Only works for gdb debugger
 * Only tested on linux
