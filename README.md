@@ -25,15 +25,22 @@ struct person
 
 int main()
 {
+  struct person johndoe = {
+    .age = 6,
+    .like = {
+      .type =  "Software-Developing",
+      .name = "C"
+    }
+  };
 
-    struct person johndoe;
-
-    memset(&johndoe, 0x00, sizeof(struct person));
-
-    johndoe.age = 6; 
-    johndoe.like.type = "Software-Developing"; 
-    johndoe.like.name = "C"; 
-    printout_struct(STRINGIZE(johndoe), &johndoe, "person");
+  structInfo person_info[] = {
+    {
+      .data = &johndoe,
+      .structName = "person",
+      .level = 0 /* the first must be level 0 */
+    },
+  };
+  printout_struct("johndoe", person_info, ARRAY_SIZE(person_info));
 
     return 0;
 }
