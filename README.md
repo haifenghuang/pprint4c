@@ -40,9 +40,9 @@ int main()
       .level = 0 /* the first must be level 0 */
     },
   };
-  printout_struct("johndoe", person_info, ARRAY_SIZE(person_info));
+  pprint_struct("johndoe", person_info, ARRAY_SIZE(person_info));
 
-    return 0;
+  return 0;
 }
 ```
 

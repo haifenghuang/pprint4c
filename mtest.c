@@ -1,4 +1,4 @@
-#include "pprint.h"
+﻿#include "pprint.h"
 
 struct person {
   int age;
@@ -58,7 +58,7 @@ int main() {
       .level = 0 /* the first must be level 0 */
     },
   };
-  printout_struct("johndoe", person_info, ARRAY_SIZE(person_info));
+  pprint_struct("johndoe", person_info, ARRAY_SIZE(person_info));
 
   int hoge = 10;
   char *str = "abcd";
@@ -110,7 +110,7 @@ int main() {
       .level = 2
     },
   };
-  printout_struct("d", data_info, ARRAY_SIZE(data_info));
+  pprint_struct("d", data_info, ARRAY_SIZE(data_info));
 
   return 0;
 }

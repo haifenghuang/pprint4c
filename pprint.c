@@ -1,4 +1,4 @@
-#include <stdio.h> /* sprintf */
+﻿#include <stdio.h> /* sprintf */
 #include <stdlib.h> /* calloc, system */
 #include <string.h> /* strcmp */
 #include <sys/types.h>
@@ -51,7 +51,7 @@ static void str_replace(char *target, const char *needle,
   strcpy(target, buffer);
 }
 
-void printout_struct(char *varName, structInfo info[], int info_size) {
+void pprint_struct(char *varName, structInfo info[], int info_size) {
   int i = 0;
   char command[1024];
   char gdbcmds[64];
@@ -99,8 +99,8 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
   sprintf(command, "sed -i -e 's/\\$1/%s/' -e '1d' %s; cat %s", varName,
           structdump, structdump);
 
-  memset(result, 0x00, sizeof(result));
-  memset(tmp_result, 0x00, sizeof(tmp_result));
+  memset(result, 0x00, sizeof(result));  /* for top level struct result */
+  memset(tmp_result, 0x00, sizeof(tmp_result)); /* for all other struct results */
 
   int gotFirstResult = 0;
   FILE *fp = popen(command, "r");
@@ -144,7 +144,7 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
 
   i = 1;
   int k = 0 ;
-  char str[info_size][20480];
+  char str[info_size][20480]; /* note: str[0] is not used */
   memset(str, 0x00, sizeof(str));
   char *temp = str[i];
   char *p = strtok(tmp_result, "\n");
@@ -184,7 +184,7 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
       str[i][strlen(str[i]) - 1] = '\0';
     }
 
-    if (info[i].structName == NULL || info[i].structName[0] == '\0') { //normal variable
+    if (info[i].structName == NULL || info[i].structName[0] == '\0') { /* normal variable */
       memset(linebuf, 0x00, sizeof(linebuf));
       memset(tmpbuf, 0x00, sizeof(tmpbuf));
 
@@ -200,6 +200,7 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
   return;
 }
 
+/* utilities functions */
 char *pprint_int(char* buf, int buf_size, void *ptr) {
   int i = *(int *)ptr;
   snprintf(buf, buf_size, "%d", i);
