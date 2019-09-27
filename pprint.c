@@ -79,7 +79,8 @@ void pprint_struct(char *varName, structInfo info[], int info_size) {
   sprintf(structdump, "/tmp/struct.dump.%d", pid);
 
   memset(command, 0x00, sizeof(command));
-  strcpy(command, "echo 'set print elements 0\nset print pretty on\n");
+  strcpy(command,
+         "echo 'set print array on\nset print array-indexes on\nset print elements 0\nset print pretty on\n"); 
   for (i = 0; i < info_size; i++) {
     if (info[i].structName == NULL || info[i].structName[0] == '\0') {
       sprintf(command + strlen(command), "p *%p\n", info[i].data);
