@@ -58,6 +58,8 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
   char structdump[64];
 
   char linebuf[4096];
+  char tmpbuf[4096];
+  char tmp[128];
 
   char result[20480];
   char tmp_result[20480];
@@ -79,8 +81,12 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
   memset(command, 0x00, sizeof(command));
   strcpy(command, "echo 'set print elements 0\nset print pretty on\n");
   for (i = 0; i < info_size; i++) {
-    sprintf(command + strlen(command), "p (struct %s)*%p\n", info[i].structName,
-            info[i].data);
+    if (info[i].structName == NULL || info[i].structName[0] == '\0') {
+      sprintf(command + strlen(command), "p *%p\n", info[i].data);
+    } else {
+      sprintf(command + strlen(command), "p (struct %s)*%p\n", info[i].structName,
+              info[i].data);
+    }
   }
   sprintf(command + strlen(command), "'> %s", gdbcmds);
   system(command);
@@ -127,7 +133,7 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
 
   /* replace '$2', '$3', ... to nothing. */
   for (i = 1; i < info_size; i++) {
-    char tmp[16];
+    memset(tmp, 0x00, sizeof(tmp));
     sprintf(tmp, "$%d = ", i + 1);
     str_replace(tmp_result, tmp, " = ");
   }
@@ -143,18 +149,24 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
   char *temp = str[i];
   char *p = strtok(tmp_result, "\n");
   do {
-    char tmpbuf[4096];
-    if (k == 0) { /* do not indent the first line */
+    if (info[i].structName == NULL || info[i].structName[0] == '\0') {
       sprintf(temp + strlen(temp), "%s\n", p);
-    } else {
-      sprintf(temp + strlen(temp), "%s\n", indent(tmpbuf, sizeof(tmpbuf), p,
-              info[i].level));
-    }
-    k++;
-    if (strcmp(p, "}") == 0) {
       i++;
       k = 0;
       temp = str[i];
+    } else {
+      if (k == 0) { /* do not indent the first line */
+        sprintf(temp + strlen(temp), "%s\n", p);
+      } else {
+        sprintf(temp + strlen(temp), "%s\n", indent(tmpbuf, sizeof(tmpbuf), p,
+              info[i].level));
+      }
+      k++;
+      if (strcmp(p, "}") == 0) {
+        i++;
+        k = 0;
+        temp = str[i];
+      }
     }
   } while ((p = strtok(NULL, "\n")) != NULL);
 
@@ -165,19 +177,52 @@ void printout_struct(char *varName, structInfo info[], int info_size) {
 #endif
 
   for (i = 1; i < info_size; i++) {
-    char tmp[128];
+    memset(tmp, 0x00, sizeof(tmp));
     sprintf(tmp, " = %p", info[i].data);
     /* remove the last '\n' if has */
     if (str[i][strlen(str[i]) - 1] = '\n') {
       str[i][strlen(str[i]) - 1] = '\0';
     }
 
-    str_replace(result, tmp, str[i]);
+    if (info[i].structName == NULL || info[i].structName[0] == '\0') { //normal variable
+      memset(linebuf, 0x00, sizeof(linebuf));
+      memset(tmpbuf, 0x00, sizeof(tmpbuf));
+
+      sprintf(linebuf, " = %p %s", info[i].data, info[i].func(tmpbuf, sizeof(tmpbuf), info[i].data));
+      str_replace(result, tmp, linebuf);
+    } else { /* structur */
+      str_replace(result, tmp, str[i]);
+    }
   }
 
   printf("\n%s\n", result);
 
   return;
 }
+
+char *pprint_int(char* buf, int buf_size, void *ptr) {
+  int i = *(int *)ptr;
+  snprintf(buf, buf_size, "%d", i);
+  return buf;
+}
+
+char *pprint_long(char* buf, int buf_size, void *ptr) {
+  long l = *(long *)ptr;
+  snprintf(buf, buf_size, "%ld", l);
+  return buf;
+}
+
+char *pprint_float(char* buf, int buf_size, void *ptr) {
+  float f = *(float *)ptr;
+  snprintf(buf, buf_size, "%f", f);
+  return buf;
+}
+
+char *pprint_double(char* buf, int buf_size, void *ptr) {
+  double d = *(double *)ptr;
+  snprintf(buf, buf_size, "%lf", d);
+  return buf;
+}
+
 
 /* vim: set ts=2 sw=2 expandtab: */

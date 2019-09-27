@@ -1,4 +1,4 @@
-﻿#include "pprint.h"
+#include "pprint.h"
 
 struct person {
   int age;
@@ -31,6 +31,7 @@ typedef struct sub_t {
 typedef struct data_t {
   int data_int;
   char c;
+  char *str;
   void *addr;
   enum_t e;
   sub_t sub;
@@ -39,6 +40,9 @@ typedef struct data_t {
 } data_t;
 
 int main() {
+  char out[10240];
+  char sub_out[10240];
+
   struct person johndoe = {
     .age = 6,
     .like = {
@@ -57,6 +61,7 @@ int main() {
   printout_struct("johndoe", person_info, ARRAY_SIZE(person_info));
 
   int hoge = 10;
+  char *str = "abcd";
   struct sub2_t sub2 = {
     .msg = "abcdefghijklmnopqrstuvwxyz"
     "abcdefghijklmnopqrstuvwxyz"
@@ -71,6 +76,7 @@ int main() {
   struct data_t d = {
     .data_int = 1,
     .c        = 'x',
+    .str      = str,
     .addr     = &hoge,
     .e        = A | C | D,
     .sub = {
@@ -87,6 +93,11 @@ int main() {
       .data = &d,
       .structName = "data_t",
       .level = 0 /* the first must be level 0 */
+    },
+    {
+      .data = &hoge,
+      .func = pprint_int,
+      .level = 1,
     },
     {
       .data = &sub,
