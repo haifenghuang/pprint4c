@@ -1,4 +1,4 @@
-﻿#ifndef _PPRINT_H_
+#ifndef _PPRINT_H_
 #define _PPRINT_H_
 
 typedef char* (*pprint_value_func)(char* buf, int buf_size, void* ptr);

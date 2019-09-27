@@ -1,4 +1,4 @@
-﻿#include <stdio.h> /* sprintf */
+#include <stdio.h> /* sprintf */
 #include <stdlib.h> /* calloc, system */
 #include <string.h> /* strcmp */
 #include <sys/types.h>

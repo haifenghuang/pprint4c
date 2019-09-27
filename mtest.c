@@ -1,4 +1,4 @@
-﻿#include "pprint.h"
+#include "pprint.h"
 
 struct person {
   int age;

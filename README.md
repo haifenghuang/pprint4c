@@ -1,4 +1,4 @@
-﻿# pprint4c
+# pprint4c
 pretty print struct's content at runtime.
 
 ## Use
